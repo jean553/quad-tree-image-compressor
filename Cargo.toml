@@ -1,0 +1,8 @@
+[package]
+name = "quad-tree-image-compressor"
+version = "0.1.0"
+authors = ["jean553 <Jean.LELIEVRE@supinfo.com>"]
+
+[dependencies]
+piston_window = "*"
+piston2d-graphics = "*"
