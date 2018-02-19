@@ -15,6 +15,14 @@ use std::fs::File;
 use std::io::Read;
 use std::env;
 
+struct QuadTreeNode;
+
+#[link(name="quad_tree", kind="static")]
+extern {
+
+    fn create() -> QuadTreeNode;
+}
+
 struct Pixel {
     rectangle: Rectangle,
     horizontal_position: f64,
