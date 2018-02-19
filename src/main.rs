@@ -113,7 +113,7 @@ fn main() {
     let mut blue: u8 = 0;
 
     let mut horizontal_position: u32 = 0;
-    let mut vertical_position: u32 = 0;
+    let mut vertical_position: u32 = height - 1;
 
     const OFFSET_BMP_RGB24: usize = 0x36;
     for (index, byte) in buffer.iter().skip(OFFSET_BMP_RGB24).enumerate() {
@@ -136,7 +136,7 @@ fn main() {
             horizontal_position += 1;
 
             if horizontal_position == width {
-                vertical_position += 1;
+                vertical_position -= 1;
                 horizontal_position = 0;
             }
         }
