@@ -163,11 +163,11 @@ fn square_has_different_pixels(
     for index in start..(end + 1) {
 
         if pixels[index] != pixels[end] {
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 /// Browse the pixels of the current square (starting from `square_start` and ending with `square_end` indices, compress the content into the quad tree node data field if all the pixels of the square are identical; divide the current square into four sub-squares if the pixels are different and call the function recursively for every new created sub-square
