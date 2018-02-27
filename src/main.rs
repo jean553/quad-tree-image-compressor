@@ -299,6 +299,23 @@ fn create_square(
     );
 
     squares.push(square);
+
+    if node.data == HAS_CHILDREN_NODE {
+
+        let sub_square_dimensions = square_dimensions / 2;
+
+        let bottom_left_node = unsafe {
+            &mut (*node.children[0])
+        };
+
+        create_square(
+            squares,
+            bottom_left_node,
+            sub_square_dimensions,
+            square_horizontal_position,
+            square_vertical_position + sub_square_dimensions,
+        );
+    }
 }
 
 fn main() {
