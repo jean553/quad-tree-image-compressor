@@ -143,6 +143,33 @@ fn clear_screen(graphics: &mut G2d) {
     );
 }
 
+/// Indicates if the square in the picture (based on start and end) has same color squares.
+///
+/// # Args:
+///
+/// `pixels` - the array of pixels to browse
+/// `start` - the index of the starting pixel of the square
+/// `end` - the index of the ending pixel of the square
+///
+/// # Returns:
+///
+/// true if pixels with different colors are within the square
+fn square_has_different_pixels(
+    pixels: &Vec<Pixel>,
+    mut start: usize,
+    end: usize,
+) -> bool {
+
+    for index in start..(end + 1) {
+
+        if pixels[index] != pixels[end] {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 fn main() {
 
     let file_name = env::args().nth(1).expect("No input file.");
@@ -223,6 +250,16 @@ fn main() {
     let mut tree = unsafe {
         create()
     };
+
+    let mut current_start: usize = 0;
+    let mut current_end = (width * height - 1) as usize;
+
+    /* FIXME: this should be recursive in order to build the whole quad tree */
+    square_has_different_pixels(
+        &pixels,
+        current_start,
+        current_end,
+    );
 
     while let Some(event) = window.next() {
 
