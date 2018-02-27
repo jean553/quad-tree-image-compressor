@@ -23,6 +23,8 @@ use pixel::Pixel;
        unsigned int data;
    };
 */
+
+#[repr(C)]
 struct QuadTreeNode {
     children: [*mut QuadTreeNode; 4],
     data: u32,
@@ -64,7 +66,7 @@ fn clear_screen(graphics: &mut G2d) {
 /// true if pixels with different colors are within the square
 fn square_has_different_pixels(
     pixels: &Vec<Pixel>,
-    mut start: usize,
+    start: usize,
     end: usize,
     dimensions: usize,
 ) -> bool {
@@ -168,7 +170,7 @@ fn main() {
     let mut file = File::open(file_name).expect("Cannot open file.");
     let mut buffer: Vec<u8> = Vec::new();
 
-    file.read_to_end(&mut buffer);
+    let _ = file.read_to_end(&mut buffer);
 
     let width = buffer[0x12] as u32;
     let height = buffer[0x16] as u32;

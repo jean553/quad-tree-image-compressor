@@ -112,15 +112,12 @@ impl PartialEq for Pixel {
         other: &Pixel,
     ) -> bool {
 
-        if (
-            self.red == other.red &&
+        if self.red == other.red &&
             self.green == other.green &&
-            self.blue == other.blue
-        ) {
+            self.blue == other.blue {
             return true;
         }
 
         return false;
     }
 }
-
