@@ -191,6 +191,9 @@ fn main() {
 
     let mut pixels: Vec<Pixel> = Vec::new();
 
+    const BYTES_PER_PIXEL: u32 = 3;
+    let last_pixel_index = (width * height * BYTES_PER_PIXEL - 1) as usize;
+
     let mut red: u8 = 0;
     let mut green: u8 = 0;
     let mut blue: u8 = 0;
@@ -201,10 +204,9 @@ fn main() {
     const OFFSET_BMP_RGB24: usize = 0x36;
     for (index, byte) in buffer.iter().skip(OFFSET_BMP_RGB24).enumerate() {
 
-        const BYTES_PER_PIXEL: u32 = 3;
         let color_index = index as u32 % BYTES_PER_PIXEL;
 
-        if index != 0 && color_index == 0 {
+        if index != 0 && (color_index == 0 || index == last_pixel_index) {
 
             pixels.push(
                 Pixel::new(
