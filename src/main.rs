@@ -150,6 +150,7 @@ fn clear_screen(graphics: &mut G2d) {
 /// `pixels` - the array of pixels to browse
 /// `start` - the index of the starting pixel of the square
 /// `end` - the index of the ending pixel of the square
+/// `dimensions` - the dimensions of the square to browse
 ///
 /// # Returns:
 ///
@@ -158,9 +159,23 @@ fn square_has_different_pixels(
     pixels: &Vec<Pixel>,
     mut start: usize,
     end: usize,
+    dimensions: usize,
 ) -> bool {
 
+    let mut horizontal_limit = start + dimensions;
+
     for index in start..(end + 1) {
+
+        /* prevent browsing the horizontal neighboor
+           of the current square */
+        if index >= horizontal_limit {
+
+            if index == horizontal_limit + dimensions - 1 {
+                horizontal_limit += 2 * dimensions;
+            }
+
+            continue;
+        }
 
         if pixels[index] != pixels[end] {
             return true;
@@ -191,6 +206,7 @@ fn create_node(
         &pixels,
         square_start,
         square_end,
+        square_dimensions as usize,
     );
 
     if different_pixels && square_dimensions != 1 {
