@@ -293,6 +293,9 @@ fn main() {
         create()
     };
 
+    /* the first square is the whole picture,
+       starting from the index 0 (bottom left)
+       to the last index (top right) */
     create_node(
         &pixels,
         &mut node,
