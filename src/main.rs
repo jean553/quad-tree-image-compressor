@@ -19,6 +19,8 @@ use std::env;
 
 use pixel::Pixel;
 
+const HAS_CHILDREN_NODE: u32 = 0xFF000000;
+
 /* the C library QuadTreeNode structure is:
 
    struct QuadTreeNode {
@@ -235,6 +237,8 @@ fn create_node(
 
         /* Quad tree node children are C-type raw pointers,
            dereferencing them is an unsafe action */
+
+        node.data = HAS_CHILDREN_NODE;
 
         let bottom_left_square = unsafe {
             &mut (*node.children[0])
