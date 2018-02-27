@@ -3,6 +3,8 @@ extern crate graphics;
 
 mod pixel;
 
+use graphics::rectangle::Rectangle;
+
 use piston_window::{
     PistonWindow,
     WindowSettings,
@@ -36,6 +38,42 @@ extern {
     fn create() -> QuadTreeNode;
 
     fn allocateChildren(node: *mut QuadTreeNode);
+}
+
+struct Square {
+    top_line: Rectangle,
+    bottom_line: Rectangle,
+    left_line: Rectangle,
+    right_line: Rectangle,
+    horizontal_position: u32,
+    vertical_position: u32,
+    width: u32,
+    height: u32,
+}
+
+impl Square {
+
+    /// Initializes a square.
+    pub fn new(
+        horizontal_position: u32,
+        vertical_position: u32,
+        width: u32,
+        height: u32,
+    ) -> Square {
+
+        const SQUARE_COLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
+
+        Square {
+            top_line: Rectangle::new(SQUARE_COLOR),
+            bottom_line: Rectangle::new(SQUARE_COLOR),
+            left_line: Rectangle::new(SQUARE_COLOR),
+            right_line: Rectangle::new(SQUARE_COLOR),
+            horizontal_position: horizontal_position,
+            vertical_position: vertical_position,
+            width: width,
+            height: height,
+        }
+    }
 }
 
 /// Clear the whole window.
