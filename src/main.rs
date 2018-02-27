@@ -275,6 +275,32 @@ fn create_node(
     }
 }
 
+/// Recursively create squaresby browsing the quad tree content.
+///
+/// # Args:
+///
+/// `squares` - the array of squares where the squares must be added
+/// `node` - the current browsed node of the quad tree
+/// `square_dimensions` - the dimensions of the current square
+/// `square_horizontal_position` - the horizontal position of the current square
+/// `square_vertical_position` - the vertical position of the current square
+fn create_square(
+    squares: &mut Vec<Square>,
+    node: &mut QuadTreeNode,
+    square_dimensions: u32,
+    square_horizontal_position: u32,
+    square_vertical_position: u32,
+) {
+
+    let square = Square::new(
+        square_horizontal_position,
+        square_vertical_position,
+        square_dimensions,
+    );
+
+    squares.push(square);
+}
+
 fn main() {
 
     let file_name = env::args().nth(1).expect("No input file.");
@@ -373,15 +399,13 @@ fn main() {
 
     let mut squares: Vec<Square> = Vec::new();
 
-    /* FIXME: generate the squares should be done by browsing the quad tree */
-
-    let square = Square::new(
-        0,
-        0,
+    create_square(
+        &mut squares,
+        &mut node,
         dimensions,
+        0,
+        0,
     );
-
-    squares.push(square);
 
     while let Some(event) = window.next() {
 
