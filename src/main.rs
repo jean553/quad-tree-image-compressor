@@ -15,12 +15,24 @@ use std::fs::File;
 use std::io::Read;
 use std::env;
 
-struct QuadTreeNode;
+/* the C library QuadTreeNode structure is:
+
+   struct QuadTreeNode {
+       QuadTreeNode* children[4];
+       unsigned int data;
+   };
+*/
+struct QuadTreeNode {
+    children: [*mut QuadTreeNode; 4],
+    data: u32,
+}
 
 #[link(name="quad_tree", kind="static")]
 extern {
 
     fn create() -> QuadTreeNode;
+
+    fn allocateChildren(node: *mut QuadTreeNode);
 }
 
 struct Pixel {
@@ -171,6 +183,11 @@ fn main() {
     .exit_on_esc(true)
     .build()
     .unwrap();
+
+    unsafe {
+        let mut tree = create();
+        allocateChildren(&mut tree as *mut QuadTreeNode);
+    }
 
     while let Some(event) = window.next() {
 
