@@ -176,22 +176,16 @@ fn square_has_different_pixels(
 ///
 /// `pixels` - the array of pixels to use
 /// `node` - the current node to modify according to the content of the current square
-/// `square_width` - the current square width
-/// `square_height` - the current square height
+/// `square_dimensions` - the width and height of the current square
 /// `square_start` - the first index of the current square
 /// `square_end` - the last index of the current square
-///
-/// FIXME: the width and height are supposed to be identicial all the time
 fn create_node(
     pixels: &Vec<Pixel>,
     node: &mut QuadTreeNode,
-    square_width: u32,
-    square_height: u32,
+    square_dimensions: u32,
     square_start: usize,
     square_end: usize,
 ) {
-
-    println!("called");
 
     let different_pixels = square_has_different_pixels(
         &pixels,
@@ -199,14 +193,13 @@ fn create_node(
         square_end,
     );
 
-    if different_pixels && square_width != 1 {
+    if different_pixels && square_dimensions != 1 {
 
         unsafe {
             allocateChildren(node)
         };
 
-        let sub_square_width = square_width / 2;
-        let sub_square_height = square_height / 2;
+        let sub_square_dimensions = square_dimensions / 2;
 
         /* Quad tree node children are C-type raw pointers,
            dereferencing them is an unsafe action */
@@ -217,15 +210,14 @@ fn create_node(
 
         let bottom_left_square_end = (
             square_end -
-            (square_width * sub_square_height) as usize -
-            sub_square_width as usize
+            (square_dimensions * sub_square_dimensions) as usize -
+            sub_square_dimensions as usize
         ) as usize;
 
         create_node(
             &pixels,
             bottom_left_square,
-            sub_square_width,
-            sub_square_height,
+            sub_square_dimensions,
             square_start,
             bottom_left_square_end,
         );
@@ -258,14 +250,16 @@ fn main() {
         panic!("The image width and height must be identical.");
     }
 
-    if width % 4 != 0 {
+    let dimensions = width;
+
+    if dimensions % 4 != 0 {
         panic!("The image width and height must be divisable by 4.");
     }
 
     let mut pixels: Vec<Pixel> = Vec::new();
 
     const BYTES_PER_PIXEL: u32 = 3;
-    let last_pixel_index = (width * height * BYTES_PER_PIXEL - 1) as usize;
+    let last_pixel_index = (dimensions.pow(2) * BYTES_PER_PIXEL - 1) as usize;
 
     let mut red: u8 = 0;
     let mut green: u8 = 0;
@@ -293,7 +287,7 @@ fn main() {
 
             horizontal_position += 1;
 
-            if horizontal_position == width {
+            if horizontal_position == dimensions {
                 vertical_position -= 1;
                 horizontal_position = 0;
             }
@@ -313,8 +307,8 @@ fn main() {
     let mut window: PistonWindow = WindowSettings::new(
         "Quad Tree Image Compressor",
         [
-            width,
-            height
+            dimensions,
+            dimensions,
         ]
     )
     .fullscreen(false)
@@ -332,8 +326,7 @@ fn main() {
     create_node(
         &pixels,
         &mut node,
-        width,
-        height,
+        dimensions,
         0,
         (width * height - 1) as usize,
     );
