@@ -4,6 +4,7 @@ extern crate graphics;
 mod pixel;
 
 use graphics::rectangle::Rectangle;
+use graphics::context::Context;
 
 use piston_window::{
     PistonWindow,
@@ -45,10 +46,9 @@ struct Square {
     bottom_line: Rectangle,
     left_line: Rectangle,
     right_line: Rectangle,
-    horizontal_position: u32,
-    vertical_position: u32,
-    width: u32,
-    height: u32,
+    horizontal_position: f64,
+    vertical_position: f64,
+    dimensions: f64,
 }
 
 impl Square {
@@ -57,22 +57,55 @@ impl Square {
     pub fn new(
         horizontal_position: u32,
         vertical_position: u32,
-        width: u32,
-        height: u32,
+        dimensions: u32,
     ) -> Square {
 
-        const SQUARE_COLOR: [f32; 4] = [0.0, 0.0, 0.0, 0.0];
+        const SQUARE_COLOR: [f32; 4] = [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+        ];
+
+        /* TODO: check if using a Line instead of
+           a Rectangle makes more sense */
 
         Square {
             top_line: Rectangle::new(SQUARE_COLOR),
             bottom_line: Rectangle::new(SQUARE_COLOR),
             left_line: Rectangle::new(SQUARE_COLOR),
             right_line: Rectangle::new(SQUARE_COLOR),
-            horizontal_position: horizontal_position,
-            vertical_position: vertical_position,
-            width: width,
-            height: height,
+            horizontal_position: horizontal_position as f64,
+            vertical_position: vertical_position as f64,
+            dimensions: dimensions as f64,
         }
+    }
+
+    /// Displays the square at its position.
+    ///
+    /// # Args:
+    ///
+    /// * `context` - graphical context from the piston window
+    /// * `graphics` - 2D graphics from the piston window
+    pub fn display(
+        &self,
+        context: Context,
+        graphics: &mut G2d,
+    ) {
+
+        const LINE_DIMENSION: f64 = 1.0;
+
+        self.top_line.draw(
+            [
+                self.horizontal_position,
+                self.vertical_position,
+                self.dimensions,
+                LINE_DIMENSION,
+            ],
+            &context.draw_state,
+            context.transform,
+            graphics,
+        );
     }
 }
 
@@ -298,6 +331,18 @@ fn main() {
         (width * height - 1) as usize,
     );
 
+    let mut squares: Vec<Square> = Vec::new();
+
+    /* FIXME: generate the squares should be done by browsing the quad tree */
+
+    let square = Square::new(
+        0,
+        0,
+        dimensions,
+    );
+
+    squares.push(square);
+
     while let Some(event) = window.next() {
 
         window.draw_2d(
@@ -307,6 +352,14 @@ fn main() {
                 for pixel in pixels.iter() {
 
                     pixel.display(
+                        context,
+                        graphics,
+                    );
+                }
+
+                for square in squares.iter() {
+
+                    square.display(
                         context,
                         graphics,
                     );
