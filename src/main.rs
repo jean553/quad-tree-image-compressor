@@ -192,10 +192,9 @@ fn main() {
     .build()
     .unwrap();
 
-    unsafe {
-        let mut tree = create();
-        allocateChildren(&mut tree as *mut QuadTreeNode);
-    }
+    let mut tree = unsafe {
+        create()
+    };
 
     while let Some(event) = window.next() {
 
