@@ -249,19 +249,35 @@ fn main() {
     .build()
     .unwrap();
 
-    let mut tree = unsafe {
+    let mut node = unsafe {
         create()
     };
 
     let mut current_start: usize = 0;
     let mut current_end = (width * height - 1) as usize;
 
-    /* FIXME: this should be recursive in order to build the whole quad tree */
-    square_has_different_pixels(
+    /* FIXME: this action should be done recursively */
+
+    if square_has_different_pixels(
         &pixels,
         current_start,
         current_end,
-    );
+    ) {
+
+        unsafe {
+            allocateChildren(&mut node as *mut QuadTreeNode)
+        };
+    } else {
+
+        let pixel: &Pixel = &pixels[current_start];
+
+        const BITS_PER_COLOR: u8 = 8;
+        node.data = pixel.red as u32;
+        node.data <<= BITS_PER_COLOR;
+        node.data += pixel.green as u32;
+        node.data <<= BITS_PER_COLOR;
+        node.data += pixel.blue as u32;
+    }
 
     while let Some(event) = window.next() {
 
