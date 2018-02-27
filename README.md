@@ -6,3 +6,15 @@ Notes:
  * the tool only works with BMP files,
  * the image dimensions (width and height) must be divisable by 4
 (if these two conditions are not respected, the behaviour is undefined)
+
+## Compilation
+
+```sh
+cargo build --release
+```
+
+## Usage
+
+```sh
+./target/release/quad-tree-image-compressor image.bmp
+```
