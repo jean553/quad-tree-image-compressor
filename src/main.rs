@@ -170,6 +170,46 @@ fn square_has_different_pixels(
     return true;
 }
 
+/// Browse the pixels of the current square (starting from `square_start` and ending with `square_end` indices, compress the content into the quad tree node data field if all the pixels of the square are identical; divide the current square into four sub-squares if the pixels are different and call the function recursively for every new created sub-square
+///
+/// # Args:
+///
+/// `pixels` - the array of pixels to use
+/// `node` - the current node to modify according to the content of the current square
+/// `square_start` - the first index of the current square
+/// `square_end` - the last index of the current square
+fn create_node(
+    pixels: &Vec<Pixel>,
+    node: &mut QuadTreeNode,
+    square_start: usize,
+    square_end: usize,
+) {
+
+    if square_has_different_pixels(
+        &pixels,
+        square_start,
+        square_end,
+    ) {
+
+        unsafe {
+            allocateChildren(node as *mut QuadTreeNode)
+        };
+
+        /* FIXME: call the function recursively for every new sub-square */
+
+    } else {
+
+        let pixel: &Pixel = &pixels[square_start];
+
+        const BITS_PER_COLOR: u8 = 8;
+        node.data = pixel.red as u32;
+        node.data <<= BITS_PER_COLOR;
+        node.data += pixel.green as u32;
+        node.data <<= BITS_PER_COLOR;
+        node.data += pixel.blue as u32;
+    }
+}
+
 fn main() {
 
     let file_name = env::args().nth(1).expect("No input file.");
@@ -253,31 +293,12 @@ fn main() {
         create()
     };
 
-    let mut current_start: usize = 0;
-    let mut current_end = (width * height - 1) as usize;
-
-    /* FIXME: this action should be done recursively */
-
-    if square_has_different_pixels(
+    create_node(
         &pixels,
-        current_start,
-        current_end,
-    ) {
-
-        unsafe {
-            allocateChildren(&mut node as *mut QuadTreeNode)
-        };
-    } else {
-
-        let pixel: &Pixel = &pixels[current_start];
-
-        const BITS_PER_COLOR: u8 = 8;
-        node.data = pixel.red as u32;
-        node.data <<= BITS_PER_COLOR;
-        node.data += pixel.green as u32;
-        node.data <<= BITS_PER_COLOR;
-        node.data += pixel.blue as u32;
-    }
+        &mut node,
+        0,
+        (width * height - 1) as usize,
+    );
 
     while let Some(event) = window.next() {
 
