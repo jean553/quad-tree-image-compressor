@@ -7,9 +7,9 @@ pub struct Pixel {
     rectangle: Rectangle,
     horizontal_position: f64,
     vertical_position: f64,
-    pub red: u8,
-    pub blue: u8,
-    pub green: u8,
+    red: u8,
+    blue: u8,
+    green: u8,
 }
 
 impl Pixel {
@@ -66,6 +66,33 @@ impl Pixel {
             context.transform,
             graphics,
         );
+    }
+
+    /// Getter of the red color value
+    ///
+    /// # Returns:
+    ///
+    /// red color value
+    pub fn get_red(&self) -> u8 {
+        self.red
+    }
+
+    /// Getter of the green color value
+    ///
+    /// # Returns:
+    ///
+    /// green color value
+    pub fn get_green(&self) -> u8 {
+        self.green
+    }
+
+    /// Getter of the blue color value
+    ///
+    /// # Returns:
+    ///
+    /// blue color value
+    pub fn get_blue(&self) -> u8 {
+        self.blue
     }
 }
 

@@ -154,11 +154,11 @@ fn create_node(
            the second, third and fourth one store the red color,
            green color and blue color respectively */
         const BITS_PER_COLOR: u8 = 8;
-        node.data = pixel.red as u32;
+        node.data = pixel.get_red() as u32;
         node.data <<= BITS_PER_COLOR;
-        node.data += pixel.green as u32;
+        node.data += pixel.get_green() as u32;
         node.data <<= BITS_PER_COLOR;
-        node.data += pixel.blue as u32;
+        node.data += pixel.get_blue() as u32;
     }
 }
 
