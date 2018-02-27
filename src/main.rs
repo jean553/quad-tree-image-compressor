@@ -191,17 +191,36 @@ fn create_node(
     square_end: usize,
 ) {
 
-    if square_has_different_pixels(
+    println!("called");
+
+    let different_pixels = square_has_different_pixels(
         &pixels,
         square_start,
         square_end,
-    ) {
+    );
+
+    if different_pixels && square_width != 1 {
 
         unsafe {
             allocateChildren(node as *mut QuadTreeNode)
         };
 
-        /* FIXME: call the function recursively for every new sub-square */
+        let sub_square_width = square_width / 2;
+        let sub_square_height = square_height / 2;
+
+        /* bottom left sub-square */
+        create_node(
+            &pixels,
+            node,
+            sub_square_width,
+            sub_square_height,
+            square_start,
+            (
+                square_end -
+                (square_width * sub_square_height) as usize -
+                sub_square_width as usize
+            ) as usize,
+        );
 
     } else {
 
