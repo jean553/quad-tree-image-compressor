@@ -101,6 +101,34 @@ impl Pixel {
     }
 }
 
+impl PartialEq for Pixel {
+
+    /// Check if two Pixel objects are identical (based on colors only)
+    ///
+    /// # Args:
+    ///
+    /// `other` - the other pixel to compare with the current object
+    ///
+    /// # Returns:
+    ///
+    /// true if identical, false if different
+    fn eq(
+        &self,
+        other: &Pixel,
+    ) -> bool {
+
+        if (
+            self.red == other.red &&
+            self.green == other.green &&
+            self.blue == other.blue
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+}
+
 /// Clear the whole window.
 fn clear_screen(graphics: &mut G2d) {
 
