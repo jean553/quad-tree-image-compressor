@@ -126,6 +126,14 @@ fn main() {
     let width = buffer[0x12] as u32;
     let height = buffer[0x16] as u32;
 
+    if width != height {
+        panic!("The image width and height must be identical.");
+    }
+
+    if width % 4 != 0 {
+        panic!("The image width and height must be divisable by 4.");
+    }
+
     let mut pixels: Vec<Pixel> = Vec::new();
 
     let mut red: u8 = 0;
@@ -184,10 +192,9 @@ fn main() {
     .build()
     .unwrap();
 
-    unsafe {
-        let mut tree = create();
-        allocateChildren(&mut tree as *mut QuadTreeNode);
-    }
+    let mut tree = unsafe {
+        create()
+    };
 
     while let Some(event) = window.next() {
 

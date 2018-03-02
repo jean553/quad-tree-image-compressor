@@ -4,8 +4,8 @@ Image compressor (*for BMP format images with specific dimensions ONLY !!!*) tha
 
 Notes:
  * the tool only works with BMP files,
+ * the image width and height must be identical,
  * the image dimensions (width and height) must be divisable by 4
-(if these two conditions are not respected, the behaviour is undefined)
 
 ## Compilation
 
