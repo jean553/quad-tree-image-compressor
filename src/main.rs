@@ -163,11 +163,11 @@ fn square_has_different_pixels(
     for index in start..(end + 1) {
 
         if pixels[index] != pixels[end] {
-            return false;
+            return true;
         }
     }
 
-    return true;
+    return false;
 }
 
 /// Browse the pixels of the current square (starting from `square_start` and ending with `square_end` indices, compress the content into the quad tree node data field if all the pixels of the square are identical; divide the current square into four sub-squares if the pixels are different and call the function recursively for every new created sub-square
@@ -191,17 +191,44 @@ fn create_node(
     square_end: usize,
 ) {
 
-    if square_has_different_pixels(
+    println!("called");
+
+    let different_pixels = square_has_different_pixels(
         &pixels,
         square_start,
         square_end,
-    ) {
+    );
+
+    if different_pixels && square_width != 1 {
 
         unsafe {
-            allocateChildren(node as *mut QuadTreeNode)
+            allocateChildren(node)
         };
 
-        /* FIXME: call the function recursively for every new sub-square */
+        let sub_square_width = square_width / 2;
+        let sub_square_height = square_height / 2;
+
+        /* Quad tree node children are C-type raw pointers,
+           dereferencing them is an unsafe action */
+
+        let bottom_left_square = unsafe {
+            &mut (*node.children[0])
+        };
+
+        let bottom_left_square_end = (
+            square_end -
+            (square_width * sub_square_height) as usize -
+            sub_square_width as usize
+        ) as usize;
+
+        create_node(
+            &pixels,
+            bottom_left_square,
+            sub_square_width,
+            sub_square_height,
+            square_start,
+            bottom_left_square_end,
+        );
 
     } else {
 
