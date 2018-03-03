@@ -242,6 +242,10 @@ fn create_node(
 
         let pixel: &Pixel = &pixels[square_start];
 
+        /* the data field of the quad tree node is 4 bytes long;
+           in our case, the first byte is useless and set to 0,
+           the second, third and fourth one store the red color,
+           green color and blue color respectively */
         const BITS_PER_COLOR: u8 = 8;
         node.data = pixel.red as u32;
         node.data <<= BITS_PER_COLOR;
