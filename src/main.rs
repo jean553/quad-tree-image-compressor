@@ -1,6 +1,8 @@
 extern crate piston_window;
 extern crate graphics;
 
+mod pixel;
+
 use piston_window::{
     PistonWindow,
     WindowSettings,
@@ -8,12 +10,11 @@ use piston_window::{
     clear,
 };
 
-use graphics::rectangle::Rectangle;
-use graphics::context::Context;
-
 use std::fs::File;
 use std::io::Read;
 use std::env;
+
+use pixel::Pixel;
 
 /* the C library QuadTreeNode structure is:
 
@@ -22,6 +23,8 @@ use std::env;
        unsigned int data;
    };
 */
+
+#[repr(C)]
 struct QuadTreeNode {
     children: [*mut QuadTreeNode; 4],
     data: u32,
@@ -33,100 +36,6 @@ extern {
     fn create() -> QuadTreeNode;
 
     fn allocateChildren(node: *mut QuadTreeNode);
-}
-
-struct Pixel {
-    rectangle: Rectangle,
-    horizontal_position: f64,
-    vertical_position: f64,
-    red: u8,
-    blue: u8,
-    green: u8,
-}
-
-impl Pixel {
-
-    /// Initializes a pixel.
-    pub fn new(
-        red: u8,
-        green: u8,
-        blue: u8,
-        horizontal_position: u32,
-        vertical_position: u32,
-    ) -> Pixel {
-
-        const MAXIMUM_COLOR_VALUE: f32 = 255.0;
-        const ALPHA_COMMON: f32 = 1.0;
-
-        Pixel {
-            rectangle: Rectangle::new([
-                red as f32 / MAXIMUM_COLOR_VALUE,
-                green as f32 / MAXIMUM_COLOR_VALUE,
-                blue as f32 / MAXIMUM_COLOR_VALUE,
-                ALPHA_COMMON,
-            ]),
-            horizontal_position: horizontal_position as f64,
-            vertical_position: vertical_position as f64,
-            red: red,
-            green: green,
-            blue: blue,
-        }
-    }
-
-    /// Displays the pixel at its position.
-    ///
-    /// # Args:
-    ///
-    /// * `context` - graphical context from the piston window
-    /// * `graphics` - 2D graphics from the piston window
-    pub fn display(
-        &self,
-        context: Context,
-        graphics: &mut G2d,
-    ) {
-
-        const PIXEL_DIMENSION: f64 = 1.0;
-
-        self.rectangle.draw(
-            [
-                self.horizontal_position,
-                self.vertical_position,
-                PIXEL_DIMENSION,
-                PIXEL_DIMENSION,
-            ],
-            &context.draw_state,
-            context.transform,
-            graphics,
-        );
-    }
-}
-
-impl PartialEq for Pixel {
-
-    /// Check if two Pixel objects are identical (based on colors only)
-    ///
-    /// # Args:
-    ///
-    /// `other` - the other pixel to compare with the current object
-    ///
-    /// # Returns:
-    ///
-    /// true if identical, false if different
-    fn eq(
-        &self,
-        other: &Pixel,
-    ) -> bool {
-
-        if (
-            self.red == other.red &&
-            self.green == other.green &&
-            self.blue == other.blue
-        ) {
-            return true;
-        }
-
-        return false;
-    }
 }
 
 /// Clear the whole window.
@@ -157,7 +66,7 @@ fn clear_screen(graphics: &mut G2d) {
 /// true if pixels with different colors are within the square
 fn square_has_different_pixels(
     pixels: &Vec<Pixel>,
-    mut start: usize,
+    start: usize,
     end: usize,
     dimensions: usize,
 ) -> bool {
@@ -247,11 +156,11 @@ fn create_node(
            the second, third and fourth one store the red color,
            green color and blue color respectively */
         const BITS_PER_COLOR: u8 = 8;
-        node.data = pixel.red as u32;
+        node.data = pixel.get_red() as u32;
         node.data <<= BITS_PER_COLOR;
-        node.data += pixel.green as u32;
+        node.data += pixel.get_green() as u32;
         node.data <<= BITS_PER_COLOR;
-        node.data += pixel.blue as u32;
+        node.data += pixel.get_blue() as u32;
     }
 }
 
@@ -261,7 +170,7 @@ fn main() {
     let mut file = File::open(file_name).expect("Cannot open file.");
     let mut buffer: Vec<u8> = Vec::new();
 
-    file.read_to_end(&mut buffer);
+    let _ = file.read_to_end(&mut buffer);
 
     let width = buffer[0x12] as u32;
     let height = buffer[0x16] as u32;
