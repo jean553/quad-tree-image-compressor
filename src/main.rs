@@ -106,6 +106,42 @@ impl Square {
             context.transform,
             graphics,
         );
+
+        self.bottom_line.draw(
+            [
+                self.horizontal_position,
+                self.vertical_position + self.dimensions - 1.0,
+                self.dimensions,
+                LINE_DIMENSION,
+            ],
+            &context.draw_state,
+            context.transform,
+            graphics,
+        );
+
+        self.left_line.draw(
+            [
+                self.horizontal_position,
+                self.vertical_position,
+                LINE_DIMENSION,
+                self.dimensions,
+            ],
+            &context.draw_state,
+            context.transform,
+            graphics,
+        );
+
+        self.right_line.draw(
+            [
+                self.horizontal_position + self.dimensions - 1.0,
+                self.vertical_position,
+                LINE_DIMENSION,
+                self.dimensions,
+            ],
+            &context.draw_state,
+            context.transform,
+            graphics,
+        );
     }
 }
 
