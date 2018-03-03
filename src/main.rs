@@ -176,11 +176,17 @@ fn square_has_different_pixels(
 ///
 /// `pixels` - the array of pixels to use
 /// `node` - the current node to modify according to the content of the current square
+/// `square_width` - the current square width
+/// `square_height` - the current square height
 /// `square_start` - the first index of the current square
 /// `square_end` - the last index of the current square
+///
+/// FIXME: the width and height are supposed to be identicial all the time
 fn create_node(
     pixels: &Vec<Pixel>,
     node: &mut QuadTreeNode,
+    square_width: u32,
+    square_height: u32,
     square_start: usize,
     square_end: usize,
 ) {
@@ -299,6 +305,8 @@ fn main() {
     create_node(
         &pixels,
         &mut node,
+        width,
+        height,
         0,
         (width * height - 1) as usize,
     );
