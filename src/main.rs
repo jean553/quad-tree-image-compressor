@@ -19,6 +19,8 @@ use std::env;
 
 use pixel::Pixel;
 
+const HAS_CHILDREN_NODE: u32 = 0xFF000000;
+
 /* the C library QuadTreeNode structure is:
 
    struct QuadTreeNode {
@@ -236,6 +238,8 @@ fn create_node(
         /* Quad tree node children are C-type raw pointers,
            dereferencing them is an unsafe action */
 
+        node.data = HAS_CHILDREN_NODE;
+
         let bottom_left_square = unsafe {
             &mut (*node.children[0])
         };
@@ -268,6 +272,49 @@ fn create_node(
         node.data += pixel.get_green() as u32;
         node.data <<= BITS_PER_COLOR;
         node.data += pixel.get_blue() as u32;
+    }
+}
+
+/// Recursively create squaresby browsing the quad tree content.
+///
+/// # Args:
+///
+/// `squares` - the array of squares where the squares must be added
+/// `node` - the current browsed node of the quad tree
+/// `square_dimensions` - the dimensions of the current square
+/// `square_horizontal_position` - the horizontal position of the current square
+/// `square_vertical_position` - the vertical position of the current square
+fn create_square(
+    squares: &mut Vec<Square>,
+    node: &mut QuadTreeNode,
+    square_dimensions: u32,
+    square_horizontal_position: u32,
+    square_vertical_position: u32,
+) {
+
+    let square = Square::new(
+        square_horizontal_position,
+        square_vertical_position,
+        square_dimensions,
+    );
+
+    squares.push(square);
+
+    if node.data == HAS_CHILDREN_NODE {
+
+        let sub_square_dimensions = square_dimensions / 2;
+
+        let bottom_left_node = unsafe {
+            &mut (*node.children[0])
+        };
+
+        create_square(
+            squares,
+            bottom_left_node,
+            sub_square_dimensions,
+            square_horizontal_position,
+            square_vertical_position + sub_square_dimensions,
+        );
     }
 }
 
@@ -369,15 +416,13 @@ fn main() {
 
     let mut squares: Vec<Square> = Vec::new();
 
-    /* FIXME: generate the squares should be done by browsing the quad tree */
-
-    let square = Square::new(
-        0,
-        0,
+    create_square(
+        &mut squares,
+        &mut node,
         dimensions,
+        0,
+        0,
     );
-
-    squares.push(square);
 
     while let Some(event) = window.next() {
 
