@@ -170,6 +170,23 @@ fn create_node(
             bottom_right_square_end,
         );
 
+        let top_left_square = unsafe {
+            &mut (*node.children[2])
+        };
+
+        let top_left_square_start = square_start +
+            (square_dimensions * sub_square_dimensions) as usize;
+        let top_left_square_end = top_left_square_start +
+            (square_dimensions * sub_square_dimensions) as usize - 1;
+
+        create_node(
+            &pixels,
+            top_left_square,
+            sub_square_dimensions,
+            top_left_square_start,
+            top_left_square_end,
+        );
+
     } else {
 
         let pixel: &Pixel = &pixels[square_start];
@@ -238,6 +255,18 @@ fn create_square(
             sub_square_dimensions,
             square_horizontal_position + sub_square_dimensions,
             square_vertical_position + sub_square_dimensions,
+        );
+
+        let top_left_node = unsafe {
+            &mut (*node.children[2])
+        };
+
+        create_square(
+            squares,
+            top_left_node,
+            sub_square_dimensions,
+            square_horizontal_position,
+            square_vertical_position,
         );
     }
 }
