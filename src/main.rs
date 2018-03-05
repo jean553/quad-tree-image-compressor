@@ -64,6 +64,7 @@ fn clear_screen(graphics: &mut G2d) {
 /// `start` - the index of the starting pixel of the square
 /// `end` - the index of the ending pixel of the square
 /// `dimensions` - the dimensions of the square to browse
+/// `sub_quare` - true if the square is a sub-square
 ///
 /// # Returns:
 ///
@@ -73,6 +74,7 @@ fn square_has_different_pixels(
     start: usize,
     end: usize,
     dimensions: usize,
+    sub_square: bool,
 ) -> bool {
 
     let mut horizontal_limit = start + dimensions;
@@ -81,7 +83,7 @@ fn square_has_different_pixels(
 
         /* prevent browsing the horizontal neighboor
            of the current square */
-        if index >= horizontal_limit {
+        if index >= horizontal_limit && sub_square {
 
             if index == horizontal_limit + dimensions - 1 {
                 horizontal_limit += 2 * dimensions;
@@ -107,12 +109,14 @@ fn square_has_different_pixels(
 /// `square_dimensions` - the width and height of the current square
 /// `square_start` - the first index of the current square
 /// `square_end` - the last index of the current square
+/// `sub_node` - true if the created node is a sub-node
 fn create_node(
     pixels: &Vec<Pixel>,
     node: &mut QuadTreeNode,
     square_dimensions: u32,
     square_start: usize,
     square_end: usize,
+    sub_node: bool,
 ) {
 
     let different_pixels = square_has_different_pixels(
@@ -120,6 +124,7 @@ fn create_node(
         square_start,
         square_end,
         square_dimensions as usize,
+        sub_node,
     );
 
     if different_pixels && square_dimensions != 1 {
@@ -151,6 +156,7 @@ fn create_node(
             sub_square_dimensions,
             square_start,
             bottom_left_square_end,
+            true,
         );
 
         let bottom_right_square = unsafe {
@@ -168,6 +174,7 @@ fn create_node(
             sub_square_dimensions,
             bottom_right_square_start,
             bottom_right_square_end,
+            true,
         );
 
         let top_left_square = unsafe {
@@ -185,6 +192,7 @@ fn create_node(
             sub_square_dimensions,
             top_left_square_start,
             top_left_square_end,
+            true,
         );
 
         let top_right_square = unsafe {
@@ -201,6 +209,7 @@ fn create_node(
             sub_square_dimensions,
             top_right_square_start,
             top_right_square_end,
+            true,
         );
 
     } else {
@@ -393,6 +402,7 @@ fn main() {
         dimensions,
         0,
         (width * height - 1) as usize,
+        false,
     );
 
     let mut squares: Vec<Square> = Vec::new();
