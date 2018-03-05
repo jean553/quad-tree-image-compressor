@@ -106,6 +106,7 @@ fn square_has_different_pixels(
 ///
 /// `pixels` - the array of pixels to use
 /// `node` - the current node to modify according to the content of the current square
+/// `main_square_dimensions` - the fixed width of the main square
 /// `square_dimensions` - the width and height of the current square
 /// `square_start` - the first index of the current square
 /// `square_end` - the last index of the current square
@@ -113,6 +114,7 @@ fn square_has_different_pixels(
 fn create_node(
     pixels: &Vec<Pixel>,
     node: &mut QuadTreeNode,
+    main_square_dimensions: u32,
     square_dimensions: u32,
     square_start: usize,
     square_end: usize,
@@ -146,13 +148,14 @@ fn create_node(
 
         let bottom_left_square_end = (
             square_end -
-            (square_dimensions * sub_square_dimensions) as usize -
+            (main_square_dimensions * sub_square_dimensions) as usize -
             sub_square_dimensions as usize
         ) as usize;
 
         create_node(
             &pixels,
             bottom_left_square,
+            main_square_dimensions,
             sub_square_dimensions,
             square_start,
             bottom_left_square_end,
@@ -171,6 +174,7 @@ fn create_node(
         create_node(
             &pixels,
             bottom_right_square,
+            main_square_dimensions,
             sub_square_dimensions,
             bottom_right_square_start,
             bottom_right_square_end,
@@ -189,6 +193,7 @@ fn create_node(
         create_node(
             &pixels,
             top_left_square,
+            main_square_dimensions,
             sub_square_dimensions,
             top_left_square_start,
             top_left_square_end,
@@ -206,6 +211,7 @@ fn create_node(
         create_node(
             &pixels,
             top_right_square,
+            main_square_dimensions,
             sub_square_dimensions,
             top_right_square_start,
             top_right_square_end,
@@ -399,6 +405,7 @@ fn main() {
     create_node(
         &pixels,
         &mut node,
+        dimensions,
         dimensions,
         0,
         (width * height - 1) as usize,
