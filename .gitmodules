@@ -1,3 +1,0 @@
-[submodule "c-data-structures"]
-	path = quad-tree-image-compressor/c-data-structures
-	url = https://github.com/jean553/c-data-structures.git
