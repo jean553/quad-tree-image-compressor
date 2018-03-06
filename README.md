@@ -7,6 +7,18 @@ Notes:
  * the image width and height must be identical,
  * the image dimensions (width and height) must be divisable by 4
 
+## Build the development environment
+
+```sh
+vagrant up
+```
+
+## Connect to the development environment
+
+```sh
+vagrant ssh
+```
+
 ## Compilation
 
 ```sh
