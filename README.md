@@ -7,6 +7,23 @@ Notes:
  * the image width and height must be identical,
  * the image dimensions (width and height) must be divisable by 4
 
+## Install and compile the Quad Tree C library
+
+The Quad Tree structure is implemented into an external project `c-data-structures`.
+
+```sh
+git submodule init
+git submodule update
+```
+
+Compile the libraries:
+
+```sh
+mkdir c-data-structures/build && cd c-data-structures/build
+cmake ..
+make
+```
+
 ## Build the development environment
 
 ```sh
