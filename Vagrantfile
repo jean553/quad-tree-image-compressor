@@ -19,11 +19,12 @@ Vagrant.configure(2) do |config|
     end
     app.ssh.username = "vagrant"
 
-    # libssl-dev is required by reqwest when testing
+    # libssl-dev is required by reqwest when testing,
+    # cmake and check are required for C library compilation
     app.vm.provision "installs", "type": "shell" do |installs|
       installs.inline = "
         sudo apt-get update
-        sudo apt-get install pkg-config libssl-dev -y
+        sudo apt-get install pkg-config libssl-dev cmake check -y
       "
     end
   end
