@@ -171,8 +171,9 @@ fn create_node(
 
         let bottom_right_square_start = square_start +
             sub_square_dimensions as usize;
-        let bottom_right_square_end = square_start +
-            (square_dimensions * sub_square_dimensions) as usize - 1;
+        let bottom_right_square_end = bottom_right_square_start as usize +
+            sub_square_dimensions as usize +
+            (main_square_dimensions * (sub_square_dimensions - 1)) as usize - 1;
 
         create_node(
             &pixels,
@@ -189,9 +190,11 @@ fn create_node(
         };
 
         let top_left_square_start = square_start +
-            (square_dimensions * sub_square_dimensions) as usize;
+            (sub_square_dimensions * main_square_dimensions) as usize;
         let top_left_square_end = top_left_square_start +
-            ((square_dimensions - 1) * sub_square_dimensions) as usize - 1;
+            (main_square_dimensions * sub_square_dimensions) as usize -
+            main_square_dimensions as usize +
+            sub_square_dimensions as usize - 1;
 
         create_node(
             &pixels,
@@ -208,8 +211,11 @@ fn create_node(
         };
 
         let top_right_square_start = square_start +
-            ((square_dimensions + 1) * sub_square_dimensions) as usize;
-        let top_right_square_end = square_dimensions.pow(2) as usize - 1;
+            ((main_square_dimensions + 1) * sub_square_dimensions) as usize;
+        let top_right_square_end = top_right_square_start +
+            (main_square_dimensions * sub_square_dimensions) as usize -
+            main_square_dimensions as usize +
+            sub_square_dimensions as usize - 1;
 
         create_node(
             &pixels,
