@@ -340,8 +340,23 @@ fn main() {
 
     let _ = file.read_to_end(&mut buffer);
 
-    let width = buffer[0x12] as u32;
-    let height = buffer[0x16] as u32;
+    const BITS_PER_BYTE: u8 = 8;
+
+    let mut width = buffer[0x15] as u32;
+    width <<= BITS_PER_BYTE;
+    width += buffer[0x14] as u32;
+    width <<= BITS_PER_BYTE;
+    width += buffer[0x13] as u32;
+    width <<= BITS_PER_BYTE;
+    width += buffer[0x12] as u32;
+
+    let mut height = buffer[0x19] as u32;
+    height <<= BITS_PER_BYTE;
+    height += buffer[0x18] as u32;
+    height <<= BITS_PER_BYTE;
+    height += buffer[0x17] as u32;
+    height <<= BITS_PER_BYTE;
+    height += buffer[0x16] as u32;
 
     if width != height {
         panic!("The image width and height must be identical.");
