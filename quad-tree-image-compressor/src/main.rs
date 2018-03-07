@@ -63,7 +63,8 @@ fn clear_screen(graphics: &mut G2d) {
 /// `pixels` - the array of pixels to browse
 /// `start` - the index of the starting pixel of the square
 /// `end` - the index of the ending pixel of the square
-/// `dimensions` - the dimensions of the square to browse
+/// `main_dimensions` - the dimensions of the main square
+/// `sub_dimensions` - the dimensions of the current browsed sub-square
 /// `sub_quare` - true if the square is a sub-square
 ///
 /// # Returns:
@@ -73,11 +74,12 @@ fn square_has_different_pixels(
     pixels: &Vec<Pixel>,
     start: usize,
     end: usize,
-    dimensions: usize,
+    main_dimensions: usize,
+    sub_dimensions: usize,
     sub_square: bool,
 ) -> bool {
 
-    let mut horizontal_limit = start + dimensions;
+    let mut horizontal_limit = start + sub_dimensions;
 
     for index in start..(end + 1) {
 
@@ -85,8 +87,8 @@ fn square_has_different_pixels(
            of the current square */
         if index >= horizontal_limit && sub_square {
 
-            if index == horizontal_limit + dimensions - 1 {
-                horizontal_limit += 2 * dimensions;
+            if index == horizontal_limit + main_dimensions - sub_dimensions - 1 {
+                horizontal_limit += main_dimensions;
             }
 
             continue;
@@ -125,6 +127,7 @@ fn create_node(
         &pixels,
         square_start,
         square_end,
+        main_square_dimensions as usize,
         square_dimensions as usize,
         sub_node,
     );
@@ -168,8 +171,9 @@ fn create_node(
 
         let bottom_right_square_start = square_start +
             sub_square_dimensions as usize;
-        let bottom_right_square_end = square_start +
-            (square_dimensions * sub_square_dimensions) as usize - 1;
+        let bottom_right_square_end = bottom_right_square_start as usize +
+            sub_square_dimensions as usize +
+            (main_square_dimensions * (sub_square_dimensions - 1)) as usize - 1;
 
         create_node(
             &pixels,
@@ -186,9 +190,11 @@ fn create_node(
         };
 
         let top_left_square_start = square_start +
-            (square_dimensions * sub_square_dimensions) as usize;
+            (sub_square_dimensions * main_square_dimensions) as usize;
         let top_left_square_end = top_left_square_start +
-            ((square_dimensions - 1) * sub_square_dimensions) as usize - 1;
+            (main_square_dimensions * sub_square_dimensions) as usize -
+            main_square_dimensions as usize +
+            sub_square_dimensions as usize - 1;
 
         create_node(
             &pixels,
@@ -205,8 +211,11 @@ fn create_node(
         };
 
         let top_right_square_start = square_start +
-            ((square_dimensions + 1) * sub_square_dimensions) as usize;
-        let top_right_square_end = square_dimensions.pow(2) as usize - 1;
+            ((main_square_dimensions + 1) * sub_square_dimensions) as usize;
+        let top_right_square_end = top_right_square_start +
+            (main_square_dimensions * sub_square_dimensions) as usize -
+            main_square_dimensions as usize +
+            sub_square_dimensions as usize - 1;
 
         create_node(
             &pixels,
