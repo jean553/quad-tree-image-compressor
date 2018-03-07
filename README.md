@@ -7,7 +7,8 @@ Image compressor (*for BMP format images with specific dimensions ONLY !!!*) tha
 Notes:
  * the tool only works with BMP files,
  * the image width and height must be identical,
- * the image dimensions (width and height) must be divisable by 4
+ * the image dimensions (width and height) must be equal to one of the following values:
+(8, 16, 32, 64, 128, 256, 512)
 
 ## Install and compile the Quad Tree C library
 
