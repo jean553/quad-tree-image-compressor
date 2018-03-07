@@ -2,7 +2,7 @@
 
 Image compressor (*for BMP format images with specific dimensions ONLY !!!*) that uses Quad Tree to recognize similar data and compact it.
 
-![Image 1](screenshot.bmp)
+![Image 1](screenshot.png)
 
 Notes:
  * the tool only works with BMP files,
