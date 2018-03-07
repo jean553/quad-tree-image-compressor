@@ -92,7 +92,11 @@ fn square_has_different_pixels(
            of the current square */
         if index >= horizontal_limit && sub_square {
 
-            if index == horizontal_limit + main_dimensions - sub_dimensions - 1 {
+            let next_line_start_index = horizontal_limit +
+                main_dimensions -
+                sub_dimensions;
+
+            if index == next_line_start_index - 1 {
                 horizontal_limit += main_dimensions;
             }
 
