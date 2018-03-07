@@ -364,7 +364,8 @@ fn main() {
 
     let dimensions = width;
 
-    if dimensions % 4 != 0 {
+    const AUTHORIZED_DIMENSIONS: [u32; 7] = [8, 16, 32, 64, 256, 512, 1024];
+    if !AUTHORIZED_DIMENSIONS.contains(&dimensions) {
         panic!("The image width and height must be divisable by 4.");
     }
 
