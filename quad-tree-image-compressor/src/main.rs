@@ -8,7 +8,12 @@ use piston_window::{
     PistonWindow,
     WindowSettings,
     G2d,
+    G2dTexture,
+    Texture,
+    TextureSettings,
+    Flip,
     clear,
+    image,
 };
 
 use std::fs::File;
@@ -326,7 +331,7 @@ fn create_square(
 fn main() {
 
     let file_name = env::args().nth(1).expect("No input file.");
-    let mut file = File::open(file_name).expect("Cannot open file.");
+    let mut file = File::open(&file_name).expect("Cannot open file.");
     let mut buffer: Vec<u8> = Vec::new();
 
     let _ = file.read_to_end(&mut buffer);
@@ -353,9 +358,6 @@ fn main() {
     let mut green: u8 = 0;
     let mut blue: u8 = 0;
 
-    let mut horizontal_position: u32 = 0;
-    let mut vertical_position: u32 = height - 1;
-
     const OFFSET_BMP_RGB24: usize = 0x36;
     for (index, byte) in buffer.iter().skip(OFFSET_BMP_RGB24).enumerate() {
 
@@ -368,17 +370,8 @@ fn main() {
                     red,
                     green,
                     blue,
-                    horizontal_position,
-                    vertical_position,
                 )
             );
-
-            horizontal_position += 1;
-
-            if horizontal_position == dimensions {
-                vertical_position -= 1;
-                horizontal_position = 0;
-            }
         }
 
         if color_index == 0 {
@@ -431,19 +424,29 @@ fn main() {
         0,
     );
 
+    /* display a picture instead of every pixels one by one,
+       pixels array is only used to build the quad tree */
+
+    let picture: G2dTexture = Texture::from_path(
+        &mut window.factory,
+        &file_name,
+        Flip::None,
+        &TextureSettings::new(),
+    ).unwrap();
+
     while let Some(event) = window.next() {
 
         window.draw_2d(
             &event,
             |context, graphics| {
 
-                for pixel in pixels.iter() {
+                clear_screen(graphics);
 
-                    pixel.display(
-                        context,
-                        graphics,
-                    );
-                }
+                image(
+                    &picture,
+                    context.transform,
+                    graphics,
+                );
 
                 for square in squares.iter() {
 
@@ -452,8 +455,6 @@ fn main() {
                         graphics,
                     );
                 }
-
-                clear_screen(graphics);
             }
         );
     }
