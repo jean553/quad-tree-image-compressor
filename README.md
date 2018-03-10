@@ -1,11 +1,11 @@
 # quad-tree-image-compressor
 
-Image compressor (*for BMP format images with specific dimensions ONLY !!!*) that uses Quad Tree to recognize similar data and compact it.
+Image compressor (*for 24-bit BMP format images with specific dimensions ONLY !!!*) that uses Quad Tree to recognize similar data and compact it.
 
 ![Image 1](screenshot.png)
 
 Notes:
- * the tool only works with BMP files,
+ * the tool only works with 24-bit BMP files,
  * the image width and height must be identical,
  * the image dimensions (width and height) must be equal to one of the following values:
 (8, 16, 32, 64, 128, 256, 512)
